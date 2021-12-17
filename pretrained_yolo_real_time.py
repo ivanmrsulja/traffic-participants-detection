@@ -1,23 +1,7 @@
 import cv2
 import numpy as np
 import time
-from enum import Enum
-
-class YoloModel(Enum):
-    V4_TINY = "yolov4-tiny"
-    V3_TINY = "yolov3-tiny"
-    V3 = "yolov3"
-
-#TODO: add to yolo file
-def load_configured_yolo_model(model):
-    net = cv2.dnn.readNet("weights/" + model.value + ".weights", "cfg/" + model.value + ".cfg")
-    classes = []
-    with open("coco.names", "r") as f:
-        classes = [line.strip() for line in f.readlines()]
-    layer_names = net.getLayerNames()
-    output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
-    colors = np.random.uniform(0, 255, size=(len(classes), 3))
-    return net, output_layers, colors, classes
+from yolo import YoloModel, load_configured_yolo_model
 
 #TODO: add to util file
 def decode_net_output(outs, min_confidence, max_iou_for_suppression, width, height):
