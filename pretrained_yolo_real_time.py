@@ -92,4 +92,4 @@ def run_on_real_time_video(video_path, model, min_confidence=0.5, max_iou_for_su
 
 
 if __name__ == "__main__":
-    run_on_real_time_video("demo_videos/usa-street.mp4", YoloModel.V4_TINY)
+    run_on_real_time_video("demo_videos/test.mp4", YoloModel.V4_TINY)

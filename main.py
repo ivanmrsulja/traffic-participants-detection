@@ -234,7 +234,7 @@ def load_image_pixels(filename, shape):
     image = expand_dims(image, 0)
     return image, width, height
 
-photo_filename = "C:\\Users\\User\\Desktop\\slicke\\7.png"
+photo_filename = "images/1.png"
 
 with open("coco.names", "r") as f:
         classes = [line.strip() for line in f.readlines()]
