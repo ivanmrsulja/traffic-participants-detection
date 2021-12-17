@@ -1,6 +1,3 @@
-import os
-import scipy.io
-import scipy.misc
 import numpy as np
 import struct
 import cv2
@@ -127,7 +124,7 @@ anchors = [[116,90, 156,198, 373,326], [30,61, 62,45, 59,119], [10,13, 16,30, 33
 class_threshold = 0.5
 
 # load and prepare an image
-def load_image_pixels(filename, shape):
+def load_image(filename, shape):
     image = cv2.cvtColor(cv2.imread(filename), cv2.COLOR_BGR2RGB)
     width, height = image.shape[1],image.shape[0] 
     image = cv2.resize(image, shape, interpolation = cv2.INTER_AREA)
@@ -145,7 +142,7 @@ with open("coco.names", "r") as f:
 # define the expected input shape for the model
 input_w, input_h = 416, 416
 
-image, image_w, image_h = load_image_pixels(photo_filename, (input_w, input_h))
+image, image_w, image_h = load_image(photo_filename, (input_w, input_h))
 
 # make prediction
 outs = yolov3.predict(image)
