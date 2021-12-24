@@ -10,7 +10,6 @@ class YoloModel(Enum):
   V3_TINY = "yolov3-tiny"
   V3 = "yolov3"
 
-
 def conv_block(inp, convs, skip=True):
 	x = inp
 	count = 0
@@ -31,6 +30,7 @@ def conv_block(inp, convs, skip=True):
 		if conv['leaky']:
 			x = LeakyReLU(alpha=0.1, name='leaky_' + str(conv['layer_idx']))(x)
 	return add([skip_connection, x]) if skip else x
+
 
 def make_yolov3_model():
 	input_image = Input(shape=(None, None, 3))
@@ -110,8 +110,6 @@ def make_yolov3_model():
 	return model
 
 
-
-#TODO: add to yolo file
 def load_configured_yolo_model(model):
     net = cv2.dnn.readNet("weights/" + model.value + ".weights", "cfg/" + model.value + ".cfg")
     classes = []

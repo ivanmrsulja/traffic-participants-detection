@@ -3,7 +3,7 @@ import numpy as np
 import time
 from yolo import YoloModel, load_configured_yolo_model
 
-#TODO: add to util file
+
 def decode_net_output(outs, min_confidence, max_iou_for_suppression, width, height):
     class_ids = []
     confidences = []

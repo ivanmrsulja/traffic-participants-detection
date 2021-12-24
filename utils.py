@@ -7,8 +7,6 @@ from numpy import expand_dims
 def sigmoid(x):
     return 1. / (1. + np.exp(-x))
 
-
-# TODO: add to util file
 def decode_netout(netout, anchors, obj_thresh, net_h, net_w, image_h, image_w):
     grid_h, grid_w = netout.shape[:2]
     nb_box = 3
