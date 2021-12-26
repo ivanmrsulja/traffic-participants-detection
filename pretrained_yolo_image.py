@@ -1,4 +1,5 @@
 import cv2
+from matplotlib.pyplot import cla
 from yolo import make_yolov3_model
 import utils
 from weight_reader import WeightReader
@@ -10,8 +11,7 @@ CLASS_THRESHOLD = 0.5
 PHOTO_FILENAME = "images/1.png"
 
 
-def yolo_visualize(photo_filename=PHOTO_FILENAME, input_width=INPUT_WIDTH, input_height=INPUT_HEIGHT, treshold=CLASS_THRESHOLD):
-    # define the yolo v3 model
+def prepare_yolo():
     yolov3 = make_yolov3_model()
 
     # load the weights
@@ -28,6 +28,11 @@ def yolo_visualize(photo_filename=PHOTO_FILENAME, input_width=INPUT_WIDTH, input
 
     with open("coco.names", "r") as f:
         classes = [line.strip() for line in f.readlines()]
+
+    return yolov3, anchors, classes
+
+
+def yolo_predict(yolov3, anchors, classes, photo_filename, input_width=INPUT_WIDTH, input_height=INPUT_HEIGHT, treshold=CLASS_THRESHOLD):
 
     image, image_w, image_h = utils.process_image(photo_filename, (input_width, input_height))
 
@@ -47,4 +52,9 @@ def yolo_visualize(photo_filename=PHOTO_FILENAME, input_width=INPUT_WIDTH, input
 
     box_indexes = cv2.dnn.NMSBoxes(boxes, confidences, treshold, 0.3)
 
+    return boxes, box_indexes, class_ids, confidences, classes
+
+
+def yolo_visualize(yolov3, anchors, classes, photo_filename=PHOTO_FILENAME, input_width=INPUT_WIDTH, input_height=INPUT_HEIGHT, treshold=CLASS_THRESHOLD):
+    boxes, box_indexes, class_ids, confidences, classes = yolo_predict(yolov3, anchors, classes, photo_filename, input_width, input_height, treshold)
     utils.visualize_boxes(photo_filename, boxes, box_indexes, class_ids, confidences, classes)

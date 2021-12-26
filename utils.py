@@ -76,3 +76,35 @@ def visualize_boxes(filename, boxes, box_ids, label_indexes, scores, label_names
         cv2.putText(image, label, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv2.LINE_AA)
     pyplot.imshow(image)
     pyplot.show()
+
+def load_annotated_data():
+    image_map = {}
+    with open('./images-annotation-data/labels_soft.csv', 'r') as file:
+        lines = file.readlines()
+        for line in lines:
+            tokens = line.split(',')
+            image_class, x, y, w, h, image_name, image_height, image_width = tokens
+            if image_name not in image_map.keys():
+                image_map[image_name] = []
+            image_map[image_name].append((image_class, int(x), int(y), int(w), int(h)))
+    return image_map
+
+
+def bb_intersection_over_union(boxA, boxB):
+    # determine the (x, y)-coordinates of the intersection rectangle
+    xA = max(boxA[0], boxB[0])
+    yA = max(boxA[1], boxB[1])
+    xB = min(boxA[2], boxB[2])
+    yB = min(boxA[3], boxB[3])
+    # compute the area of intersection rectangle
+    interArea = max(0, xB - xA + 1) * max(0, yB - yA + 1)
+    # compute the area of both the prediction and ground-truth
+    # rectangles
+    boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
+    boxBArea = (boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
+    # compute the intersection over union by taking the intersection
+    # area and dividing it by the sum of prediction + ground-truth
+    # areas - the interesection area
+    iou = interArea / float(boxAArea + boxBArea - interArea)
+    # return the intersection over union value
+    return iou

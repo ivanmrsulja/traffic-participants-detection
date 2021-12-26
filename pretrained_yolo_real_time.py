@@ -30,12 +30,16 @@ def decode_net_output(outs, min_confidence, max_iou_for_suppression, width, heig
                 class_ids.append(class_id)
 
     box_indexes = cv2.dnn.NMSBoxes(boxes, confidences, min_confidence, max_iou_for_suppression)
-    return class_ids, confidences, boxes, box_indexes
+    # return class_ids, confidences, boxes, box_indexes
+    return boxes, box_indexes, class_ids, confidences
 
-def run_on_real_time_video(video_path, model, min_confidence=0.5, max_iou_for_suppression=0.3):
+def load_yolo(model):
+    return load_configured_yolo_model(model)
+
+
+
+def run_on_real_time_video(net, output_layers, colors, classes, video_path, min_confidence=0.5, max_iou_for_suppression=0.3):
     cap = cv2.VideoCapture(video_path)
-
-    net, output_layers, colors, classes = load_configured_yolo_model(model)
 
     font = cv2.FONT_HERSHEY_PLAIN
     starting_time = time.time()
@@ -54,7 +58,7 @@ def run_on_real_time_video(video_path, model, min_confidence=0.5, max_iou_for_su
         net.setInput(blob)
         outs = net.forward(output_layers)
 
-        class_ids, confidences, boxes, box_indexes = decode_net_output(outs, min_confidence, max_iou_for_suppression, width, height)
+        boxes, box_indexes, class_ids, confidences = decode_net_output(outs, min_confidence, max_iou_for_suppression, width, height)
 
         for i in range(len(boxes)):
             if i in box_indexes:
@@ -68,7 +72,7 @@ def run_on_real_time_video(video_path, model, min_confidence=0.5, max_iou_for_su
         elapsed_time = time.time() - starting_time
         fps = frame_count / elapsed_time
         cv2.putText(frame, "FPS: " + str(round(fps, 2)), (10, 50), font, 2, (0, 0, 0), 3)
-        cv2.imshow("Demo: {} - {}".format(video_path, model.value), frame)
+        cv2.imshow("Demo: {}".format(video_path), frame)
         key = cv2.waitKey(1)
         if key == 27: # ESCAPE
             break
@@ -78,4 +82,5 @@ def run_on_real_time_video(video_path, model, min_confidence=0.5, max_iou_for_su
 
 
 if __name__ == "__main__":
-    run_on_real_time_video("demo_videos/test.mp4", YoloModel.V4_TINY)
+    net, output_layers, colors, classes = load_yolo(YoloModel.V4_TINY)
+    run_on_real_time_video(net, output_layers, colors, classes,"demo_videos/test.mp4")
