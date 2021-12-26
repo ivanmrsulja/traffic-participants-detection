@@ -3,7 +3,6 @@ import cv2
 from matplotlib import pyplot
 from numpy import expand_dims
 
-
 def sigmoid(x):
     return 1. / (1. + np.exp(-x))
 
@@ -108,3 +107,70 @@ def bb_intersection_over_union(boxA, boxB):
     iou = interArea / float(boxAArea + boxBArea - interArea)
     # return the intersection over union value
     return iou
+
+def initalize_metrics():
+    detection_success = 0
+    detection_total = 0
+
+    true_detection_positives = 0
+    false_detection_positives = 0
+    false_detection_negatives = 0
+
+    true_classification_positives = {
+        "car": 0, 
+        "bus": 0, 
+        "truck": 0, 
+        "person": 0
+    }
+    false_classification_positives = {
+        "car": 0, 
+        "bus": 0, 
+        "truck": 0, 
+        "person": 0
+    }
+    false_classification_negatives = {
+        "car": 0, 
+        "bus": 0, 
+        "truck": 0, 
+        "person": 0
+    }
+    return detection_success, detection_total, true_detection_positives, false_detection_positives, false_detection_negatives, true_classification_positives, false_classification_positives, false_classification_negatives
+
+
+def print_metrics(detection_success, detection_total,
+    true_detection_positives, false_detection_positives, 
+    false_detection_negatives, true_classification_positives, 
+    false_classification_positives, false_classification_negatives):
+
+    precision = 0
+    if (true_detection_positives > 0):
+        precision = true_detection_positives / (true_detection_positives + false_detection_positives)
+    recall = 0
+    if(true_detection_positives > 0):
+        recall = true_detection_positives / (true_detection_positives + false_detection_negatives)
+    f_value = 0
+    if (precision > 0 or recall > 0):
+        f_value = (2 * precision * recall) / (precision + recall)
+
+    print("\n\n==Detection performance measures==\n")
+    print(f"\tDetection accuracy: {(detection_success / detection_total) * 100} %")
+    print(f"\tDetection precision: {precision * 100} %")
+    print(f"\tDetection recall: {recall * 100} %")
+    print(f"\tDetection F-Value: {f_value * 100} %")
+
+    print("\n\n==Classification performance measures by class==")
+    for item in ['car', 'bus', 'truck', 'person']:
+        precision = 0
+        if (true_classification_positives[item] > 0):
+            precision = true_classification_positives[item] / (true_classification_positives[item] + false_classification_positives[item])
+        recall = 0
+        if (true_classification_positives[item] > 0):
+            recall = true_classification_positives[item] / (true_classification_positives[item] + false_classification_negatives[item])
+        f_value = 0
+        if (precision > 0 or recall > 0):
+            f_value = (2 * precision * recall) / (precision + recall)
+
+        print(f"\n\t=Measures for class {item}=")
+        print(f"\t\tPrecision: {precision * 100} %")
+        print(f"\t\tRecall: {recall * 100} %")
+        print(f"\t\tF-Value: {f_value * 100} %")

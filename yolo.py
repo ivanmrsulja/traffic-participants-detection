@@ -6,9 +6,9 @@ import cv2
 import numpy as np
 
 class YoloModel(Enum):
-  V4_TINY = "yolov4-tiny"
-  V3_TINY = "yolov3-tiny"
-  V3 = "yolov3"
+	V4_TINY = "yolov4-tiny"
+	V3_TINY = "yolov3-tiny"
+	V3 = "yolov3"
 
 def conv_block(inp, convs, skip=True):
 	x = inp
