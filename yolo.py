@@ -110,12 +110,45 @@ def make_yolov3_model():
 	return model
 
 
+def load_coco_classes():
+	classes = []
+	with open("coco.names", "r") as f:
+		classes = [line.strip() for line in f.readlines()]
+	return classes
+		
+
 def load_configured_yolo_model(model):
     net = cv2.dnn.readNet("weights/" + model.value + ".weights", "cfg/" + model.value + ".cfg")
-    classes = []
-    with open("coco.names", "r") as f:
-        classes = [line.strip() for line in f.readlines()]
+    classes = load_coco_classes()
     layer_names = net.getLayerNames()
     output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
     colors = np.random.uniform(0, 255, size=(len(classes), 3))
     return net, output_layers, colors, classes
+
+def decode_net_output(outs, min_confidence, max_iou_for_suppression, width, height):
+    class_ids = []
+    confidences = []
+    boxes = []
+    for out in outs:
+        for detection in out:
+            scores = detection[5:]
+            class_id = np.argmax(scores)
+            if class_id not in [0, 2, 5, 7]: continue
+            confidence = scores[class_id]
+            if confidence >= min_confidence:
+                # Object detected
+                center_x = int(detection[0] * width)
+                center_y = int(detection[1] * height)
+                w = int(detection[2] * width)
+                h = int(detection[3] * height)
+
+                # Rectangle coordinates
+                x = int(center_x - w / 2)
+                y = int(center_y - h / 2)
+
+                boxes.append([x, y, w, h])
+                confidences.append(float(confidence))
+                class_ids.append(class_id)
+
+    box_indexes = cv2.dnn.NMSBoxes(boxes, confidences, min_confidence, max_iou_for_suppression)
+    return boxes, box_indexes, class_ids, confidences

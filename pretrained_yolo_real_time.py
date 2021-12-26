@@ -1,41 +1,7 @@
 import cv2
 import numpy as np
 import time
-from yolo import YoloModel, load_configured_yolo_model
-
-
-def decode_net_output(outs, min_confidence, max_iou_for_suppression, width, height):
-    class_ids = []
-    confidences = []
-    boxes = []
-    for out in outs:
-        for detection in out:
-            scores = detection[5:]
-            class_id = np.argmax(scores)
-            if class_id not in [0, 2, 5, 7]: continue
-            confidence = scores[class_id]
-            if confidence >= min_confidence:
-                # Object detected
-                center_x = int(detection[0] * width)
-                center_y = int(detection[1] * height)
-                w = int(detection[2] * width)
-                h = int(detection[3] * height)
-
-                # Rectangle coordinates
-                x = int(center_x - w / 2)
-                y = int(center_y - h / 2)
-
-                boxes.append([x, y, w, h])
-                confidences.append(float(confidence))
-                class_ids.append(class_id)
-
-    box_indexes = cv2.dnn.NMSBoxes(boxes, confidences, min_confidence, max_iou_for_suppression)
-    # return class_ids, confidences, boxes, box_indexes
-    return boxes, box_indexes, class_ids, confidences
-
-def load_yolo(model):
-    return load_configured_yolo_model(model)
-
+from yolo import YoloModel, load_configured_yolo_model, decode_net_output
 
 
 def run_on_real_time_video(net, output_layers, colors, classes, video_path, min_confidence=0.5, max_iou_for_suppression=0.3):
@@ -82,5 +48,5 @@ def run_on_real_time_video(net, output_layers, colors, classes, video_path, min_
 
 
 if __name__ == "__main__":
-    net, output_layers, colors, classes = load_yolo(YoloModel.V4_TINY)
+    net, output_layers, colors, classes = load_configured_yolo_model(YoloModel.V4_TINY)
     run_on_real_time_video(net, output_layers, colors, classes,"demo_videos/test.mp4")
