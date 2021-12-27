@@ -26,8 +26,8 @@ def decode_netout(netout, anchors, obj_thresh, net_h, net_w, image_h, image_w):
         row = i / grid_w
         col = i % grid_w
         for b in range(nb_box):
-            # objectness = netout[int(row)][int(col)][b][4] #we dont need this
-            # if(objectness.all() <= obj_thresh): continue
+            objectness = netout[int(row)][int(col)][b][4] #we dont need this
+            if(objectness.all() <= obj_thresh): continue
 
             # last elements are class probabilities
             scores = netout[int(row)][col][b][5:]
@@ -36,7 +36,7 @@ def decode_netout(netout, anchors, obj_thresh, net_h, net_w, image_h, image_w):
             if class_id not in [0, 2, 5, 7]: continue  # person, car, bus, truck
 
             score = scores[class_id]
-            if score < 0.5: continue
+            # if score < obj_thresh: continue
 
             # first 4 elements are x, y, w, and h
             x, y, w, h = netout[int(row)][int(col)][b][:4]
@@ -77,6 +77,7 @@ def visualize_boxes(filename, boxes, box_ids, label_indexes, scores, label_names
         cv2.putText(image, label, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv2.LINE_AA)
     pyplot.imshow(image)
     pyplot.show()
+
 
 def load_annotated_data():
     image_map = {}
@@ -141,11 +142,11 @@ def initalize_metrics():
 
 
 def print_metrics(result_map):
-    print("\n\n==Detection performance measures==\n")
-    print(f"\tDetection accuracy: {result_map['detection'][0] * 100} %")
-    print(f"\tDetection precision: {result_map['detection'][1] * 100} %")
-    print(f"\tDetection recall: {result_map['detection'][2] * 100} %")
-    print(f"\tDetection F-Value: {result_map['detection'][3] * 100} %")
+    print("\n\n==Recognition performance measures==\n")
+    print(f"\tRecognition accuracy: {result_map['detection'][0] * 100} %")
+    print(f"\tRecognition precision: {result_map['detection'][1] * 100} %")
+    print(f"\tRecognition recall: {result_map['detection'][2] * 100} %")
+    print(f"\tRecognition F-Value: {result_map['detection'][3] * 100} %")
 
     print("\n\n==Classification performance measures by class==")
     for key in result_map["classification"]:
