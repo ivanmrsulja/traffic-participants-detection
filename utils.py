@@ -3,8 +3,10 @@ import cv2
 from matplotlib import pyplot
 from numpy import expand_dims
 
+
 def sigmoid(x):
     return 1. / (1. + np.exp(-x))
+
 
 def decode_netout(netout, anchors, obj_thresh, net_h, net_w, image_h, image_w):
     grid_h, grid_w = netout.shape[:2]
@@ -108,6 +110,7 @@ def bb_intersection_over_union(boxA, boxB):
     # return the intersection over union value
     return iou
 
+
 def initalize_metrics():
     detection_success = 0
     detection_total = 0
@@ -137,7 +140,6 @@ def initalize_metrics():
     return detection_success, detection_total, true_detection_positives, false_detection_positives, false_detection_negatives, true_classification_positives, false_classification_positives, false_classification_negatives
 
 
-
 def print_metrics(result_map):
     print("\n\n==Detection performance measures==\n")
     print(f"\tDetection accuracy: {result_map['detection'][0] * 100} %")
@@ -151,6 +153,7 @@ def print_metrics(result_map):
         print(f"\t\tPrecision: {result_map['classification'][key][0] * 100} %")
         print(f"\t\tRecall: {result_map['classification'][key][1] * 100} %")
         print(f"\t\tF-Value: {result_map['classification'][key][2] * 100} %")
+
 
 def calculate_metrics(detection_success, detection_total,
     true_detection_positives, false_detection_positives, 

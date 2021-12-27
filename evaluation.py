@@ -15,10 +15,12 @@ def prepare_data_for_handmade():
     image_map = load_annotated_data()
     return yolov3, anchors, classes, image_map
 
+
 def prepare_data_for_pretrained(model):
     net, output_layers, colors, classes = load_configured_yolo_model(model)
     image_map = load_annotated_data()
     return net, output_layers, colors, classes, image_map
+
 
 def evaluate_handmade_yolov3(yolov3, anchors, classes, image_map, iou_threshold=0.5, print=False):
    
@@ -63,6 +65,7 @@ def evaluate_handmade_yolov3(yolov3, anchors, classes, image_map, iou_threshold=
     if(print):
         print_metrics(result_map)
     return result_map
+
 
 def evaluate_preconfigured_yolo(net, output_layers, _, classes, image_map, iou_threshold=0.5, min_confidence=0.5, max_iou_for_suppression=0.3, print=False):
     detection_success, detection_total, true_detection_positives, false_detection_positives, false_detection_negatives, true_classification_positives, false_classification_positives, false_classification_negatives = initalize_metrics()
@@ -112,7 +115,6 @@ def evaluate_preconfigured_yolo(net, output_layers, _, classes, image_map, iou_t
     return result_map
 
 
-
 def calculate_average_precision(start, finish, model=None):
     thresholds = np.arange(start=start, stop=finish, step=0.05)
     evaluation_map = {
@@ -134,7 +136,6 @@ def calculate_average_precision(start, finish, model=None):
         }
     }
     
-    
     if model is None:
         yolov3, anchors, classes, image_map = prepare_data_for_handmade()
     else:
@@ -152,9 +153,6 @@ def calculate_average_precision(start, finish, model=None):
             evaluation_map[key]["recall"].append(item[1])
         print(f"==Finished iteration {count + 1} of {len(thresholds)}")
 
-    n = len(thresholds)
-    # ap = 0
-
     print("==Average precisions")
     total_ap = 0
     for key in evaluation_map:
@@ -162,11 +160,7 @@ def calculate_average_precision(start, finish, model=None):
         evaluation_map[key]["recall"].append(0.0)
 
         ap = 0
-    
-    
         for count, thresh in enumerate(thresholds):
-            # if count == len(thresholds) - 2:
-            #     break
             ap += (evaluation_map[key]["recall"][count] - evaluation_map[key]["recall"][count + 1]) * evaluation_map[key]["precision"][count]
         
         print(f"\t=Average precision for class {key}: {ap}")

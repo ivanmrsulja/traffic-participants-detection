@@ -10,6 +10,7 @@ class YoloModel(Enum):
 	V3_TINY = "yolov3-tiny"
 	V3 = "yolov3"
 
+
 def conv_block(inp, convs, skip=True):
 	x = inp
 	count = 0
@@ -124,6 +125,7 @@ def load_configured_yolo_model(model):
     output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
     colors = np.random.uniform(0, 255, size=(len(classes), 3))
     return net, output_layers, colors, classes
+
 
 def decode_net_output(outs, min_confidence, max_iou_for_suppression, width, height):
     class_ids = []

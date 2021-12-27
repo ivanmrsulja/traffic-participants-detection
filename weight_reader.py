@@ -46,3 +46,4 @@ class WeightReader:
                     conv_layer.set_weights([kernel])
             except ValueError:
                 print("no convolution #" + str(i))
+                
