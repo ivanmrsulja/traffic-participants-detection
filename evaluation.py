@@ -18,7 +18,6 @@ def prepare_data_for_handmade():
 def prepare_data_for_pretrained(model):
     net, output_layers, colors, classes = load_configured_yolo_model(model)
     image_map = load_annotated_data()
-    # classes = load_coco_classes()
     return net, output_layers, colors, classes, image_map
 
 def evaluate_handmade_yolov3(yolov3, anchors, classes, image_map, iou_threshold=0.5, print=False):
@@ -65,7 +64,7 @@ def evaluate_handmade_yolov3(yolov3, anchors, classes, image_map, iou_threshold=
         print_metrics(result_map)
     return result_map
 
-def evaluate_pretrained_yolo(net, output_layers, colors, classes, image_map, iou_threshold=0.5, min_confidence=0.5, max_iou_for_suppression=0.3, print=False):
+def evaluate_preconfigured_yolo(net, output_layers, _, classes, image_map, iou_threshold=0.5, min_confidence=0.5, max_iou_for_suppression=0.3, print=False):
     detection_success, detection_total, true_detection_positives, false_detection_positives, false_detection_negatives, true_classification_positives, false_classification_positives, false_classification_negatives = initalize_metrics()
 
     for key in image_map.keys():
@@ -146,7 +145,7 @@ def calculate_average_precision(start, finish, model=None):
         if model is None:
             result_map = evaluate_handmade_yolov3(yolov3, anchors, classes, image_map, thresh)
         else:
-            result_map = evaluate_pretrained_yolo(net, output_layers, colors, classes, image_map,thresh)
+            result_map = evaluate_preconfigured_yolo(net, output_layers, colors, classes, image_map, thresh)
         for key in result_map["classification"].keys():
             item = result_map["classification"][key]
             evaluation_map[key]["precision"].append(item[0])
