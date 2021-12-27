@@ -137,28 +137,48 @@ def initalize_metrics():
     return detection_success, detection_total, true_detection_positives, false_detection_positives, false_detection_negatives, true_classification_positives, false_classification_positives, false_classification_negatives
 
 
-def print_metrics(detection_success, detection_total,
+
+def print_metrics(result_map):
+    print("\n\n==Detection performance measures==\n")
+    print(f"\tDetection accuracy: {result_map['detection'][0] * 100} %")
+    print(f"\tDetection precision: {result_map['detection'][1] * 100} %")
+    print(f"\tDetection recall: {result_map['detection'][2] * 100} %")
+    print(f"\tDetection F-Value: {result_map['detection'][3] * 100} %")
+
+    print("\n\n==Classification performance measures by class==")
+    for key in result_map["classification"]:
+        print(f"\n\t=Measures for class {key}=")
+        print(f"\t\tPrecision: {result_map['classification'][key][0] * 100} %")
+        print(f"\t\tRecall: {result_map['classification'][key][1] * 100} %")
+        print(f"\t\tF-Value: {result_map['classification'][key][2] * 100} %")
+
+def calculate_metrics(detection_success, detection_total,
     true_detection_positives, false_detection_positives, 
     false_detection_negatives, true_classification_positives, 
     false_classification_positives, false_classification_negatives):
 
-    precision = 0
+    detection_precision = 0
     if (true_detection_positives > 0):
-        precision = true_detection_positives / (true_detection_positives + false_detection_positives)
-    recall = 0
+        detection_precision = true_detection_positives / (true_detection_positives + false_detection_positives)
+    detection_recall = 0
     if(true_detection_positives > 0):
-        recall = true_detection_positives / (true_detection_positives + false_detection_negatives)
-    f_value = 0
-    if (precision > 0 or recall > 0):
-        f_value = (2 * precision * recall) / (precision + recall)
+        detection_recall = true_detection_positives / (true_detection_positives + false_detection_negatives)
+    detection_f_value = 0
+    if (detection_precision > 0 or detection_recall > 0):
+        detection_f_value = (2 * detection_precision * detection_recall) / (detection_precision + detection_recall)
+    
+    detection_accuracy = detection_success / detection_total
 
-    print("\n\n==Detection performance measures==\n")
-    print(f"\tDetection accuracy: {(detection_success / detection_total) * 100} %")
-    print(f"\tDetection precision: {precision * 100} %")
-    print(f"\tDetection recall: {recall * 100} %")
-    print(f"\tDetection F-Value: {f_value * 100} %")
+    result_map = {
+        "detection": [detection_accuracy, detection_precision, detection_recall, detection_f_value], 
+        "classification": {
+            "car": [], 
+            "bus": [], 
+            "truck": [], 
+            "person": []
+        }
+    }
 
-    print("\n\n==Classification performance measures by class==")
     for item in ['car', 'bus', 'truck', 'person']:
         precision = 0
         if (true_classification_positives[item] > 0):
@@ -169,8 +189,9 @@ def print_metrics(detection_success, detection_total,
         f_value = 0
         if (precision > 0 or recall > 0):
             f_value = (2 * precision * recall) / (precision + recall)
+        
+        result_map["classification"][item] = [precision, recall, f_value]
 
-        print(f"\n\t=Measures for class {item}=")
-        print(f"\t\tPrecision: {precision * 100} %")
-        print(f"\t\tRecall: {recall * 100} %")
-        print(f"\t\tF-Value: {f_value * 100} %")
+    return result_map
+    
+

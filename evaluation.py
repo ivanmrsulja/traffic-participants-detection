@@ -1,17 +1,28 @@
 from matplotlib.pyplot import cla
 from pretrained_yolo_image import prepare_yolo, yolo_predict, yolo_visualize
-from utils import bb_intersection_over_union, load_annotated_data, initalize_metrics, print_metrics
+from utils import bb_intersection_over_union, load_annotated_data, initalize_metrics, calculate_metrics, print_metrics
 from yolo import load_configured_yolo_model, decode_net_output, load_coco_classes
 import cv2
+import numpy as np
 
 INPUT_WIDTH = 416
 INPUT_HEIGHT = 416
 CLASS_THRESHOLD = 0.5
 
-def evaluate_handmade_yolov3(iou_threshold=0.5):
+
+def prepare_data_for_handmade():
     yolov3, anchors, classes = prepare_yolo()
     image_map = load_annotated_data()
-    
+    return yolov3, anchors, classes, image_map
+
+def prepare_data_for_pretrained(model):
+    net, output_layers, colors, classes = load_configured_yolo_model(model)
+    image_map = load_annotated_data()
+    # classes = load_coco_classes()
+    return net, output_layers, colors, classes, image_map
+
+def evaluate_handmade_yolov3(yolov3, anchors, classes, image_map, iou_threshold=0.5, print=False):
+   
     detection_success, detection_total, true_detection_positives, false_detection_positives, false_detection_negatives, true_classification_positives, false_classification_positives, false_classification_negatives = initalize_metrics()
     
     for key in image_map.keys():
@@ -49,14 +60,13 @@ def evaluate_handmade_yolov3(iou_threshold=0.5):
 
         false_detection_positives += len(correct_boxes)
 
-    print_metrics(detection_success, detection_total, true_detection_positives, false_detection_positives, false_detection_negatives, true_classification_positives, false_classification_positives, false_classification_negatives)
+    result_map = calculate_metrics(detection_success, detection_total, true_detection_positives, false_detection_positives, false_detection_negatives, true_classification_positives, false_classification_positives, false_classification_negatives)
+    if(print):
+        print_metrics(result_map)
+    return result_map
 
-
-def evaluate_pretrained_yolo(model, iou_threshold=0.5, min_confidence=0.5, max_iou_for_suppression=0.3):
-    net, output_layers, colors, classes = load_configured_yolo_model(model)
-    image_map = load_annotated_data()
+def evaluate_pretrained_yolo(net, output_layers, colors, classes, image_map, iou_threshold=0.5, min_confidence=0.5, max_iou_for_suppression=0.3, print=False):
     detection_success, detection_total, true_detection_positives, false_detection_positives, false_detection_negatives, true_classification_positives, false_classification_positives, false_classification_negatives = initalize_metrics()
-    classes = load_coco_classes()
 
     for key in image_map.keys():
         image = cv2.cvtColor(cv2.imread(f"./images/{key}"), cv2.COLOR_BGR2RGB)
@@ -97,4 +107,70 @@ def evaluate_pretrained_yolo(model, iou_threshold=0.5, min_confidence=0.5, max_i
                 false_classification_negatives[truth_box[0]] += 1
 
         false_detection_positives += len(correct_boxes)
-    print_metrics(detection_success, detection_total, true_detection_positives, false_detection_positives, false_detection_negatives, true_classification_positives, false_classification_positives, false_classification_negatives)
+    result_map = calculate_metrics(detection_success, detection_total, true_detection_positives, false_detection_positives, false_detection_negatives, true_classification_positives, false_classification_positives, false_classification_negatives)
+    if(print):
+        print_metrics(result_map)
+    return result_map
+
+
+
+def calculate_average_precision(start, finish, model=None):
+    thresholds = np.arange(start=start, stop=finish, step=0.05)
+    evaluation_map = {
+        "car": {
+            "precision": [],
+            "recall": []
+        }, 
+        "bus": {
+            "precision": [],
+            "recall": []
+        }, 
+        "truck": {
+            "precision": [],
+            "recall": []
+        }, 
+        "person": {
+            "precision": [],
+            "recall": []
+        }
+    }
+    
+    
+    if model is None:
+        yolov3, anchors, classes, image_map = prepare_data_for_handmade()
+    else:
+        net, output_layers, colors, classes, image_map = prepare_data_for_pretrained(model)
+
+    for count, thresh in enumerate(thresholds):
+        result_map = {}
+        if model is None:
+            result_map = evaluate_handmade_yolov3(yolov3, anchors, classes, image_map, thresh)
+        else:
+            result_map = evaluate_pretrained_yolo(net, output_layers, colors, classes, image_map,thresh)
+        for key in result_map["classification"].keys():
+            item = result_map["classification"][key]
+            evaluation_map[key]["precision"].append(item[0])
+            evaluation_map[key]["recall"].append(item[1])
+        print(f"==Finished iteration {count + 1} of {len(thresholds)}")
+
+    n = len(thresholds)
+    # ap = 0
+
+    print("==Average precisions")
+    total_ap = 0
+    for key in evaluation_map:
+        evaluation_map[key]["precision"].append(1.0)
+        evaluation_map[key]["recall"].append(0.0)
+
+        ap = 0
+    
+    
+        for count, thresh in enumerate(thresholds):
+            # if count == len(thresholds) - 2:
+            #     break
+            ap += (evaluation_map[key]["recall"][count] - evaluation_map[key]["recall"][count + 1]) * evaluation_map[key]["precision"][count]
+        
+        print(f"\t=Average precision for class {key}: {ap}")
+        total_ap += ap
+    
+    print(f"==Mean average precision: {total_ap / 4}")
