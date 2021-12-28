@@ -1,2 +1,2 @@
 # real-time-vehicle-classification
-Vehicle detection, localization and classification on real time video.
+Traffic participants recognition, localization and classification on real time video.
