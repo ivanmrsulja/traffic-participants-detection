@@ -118,6 +118,10 @@ def evaluate_preconfigured_yolo(net, output_layers, _, classes, image_map, iou_t
 def calculate_average_precision(start, finish, model=None):
     thresholds = np.arange(start=start, stop=finish, step=0.05)
     evaluation_map = {
+        "detection": {
+            "precision": [],
+            "recall": []
+        },
         "car": {
             "precision": [],
             "recall": []
@@ -151,9 +155,14 @@ def calculate_average_precision(start, finish, model=None):
             item = result_map["classification"][key]
             evaluation_map[key]["precision"].append(item[0])
             evaluation_map[key]["recall"].append(item[1])
+
+        evaluation_map["detection"]["precision"].append(result_map["detection"][1])
+        evaluation_map["detection"]["recall"].append(result_map["detection"][2])
+
         print(f"==Finished iteration {count + 1} of {len(thresholds)}")
 
-    print("==Average precisions")
+    print("\n==Average precisions")
+
     total_ap = 0
     for key in evaluation_map:
         evaluation_map[key]["precision"].append(1.0)
@@ -163,7 +172,10 @@ def calculate_average_precision(start, finish, model=None):
         for count, thresh in enumerate(thresholds):
             ap += (evaluation_map[key]["recall"][count] - evaluation_map[key]["recall"][count + 1]) * evaluation_map[key]["precision"][count]
         
-        print(f"\t=Average precision for class {key}: {ap}")
-        total_ap += ap
+        if key == "detection":
+            print(f"\t=Average precision for object detection(recognition): {ap}")
+        else:
+            print(f"\t=Average precision for class {key}: {ap}")
+            total_ap += ap
     
     print(f"==Mean average precision: {total_ap / 4}")

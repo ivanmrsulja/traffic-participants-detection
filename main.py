@@ -13,9 +13,9 @@ if __name__ == '__main__':
     # evaluate_handmade_yolov3(yolov3, anchors, classes, image_map, print=True)
 
     ## Calculate simple metrics for preconfigured model (accuracy, precision, recall and f-value)
-    net, output_layers, colors, classes, image_map = prepare_data_for_pretrained(YoloModel.V4_TINY)
-    evaluate_preconfigured_yolo(net, output_layers, colors, classes, image_map, print=True)
+    # net, output_layers, colors, classes, image_map = prepare_data_for_pretrained(YoloModel.V4_TINY)
+    # evaluate_preconfigured_yolo(net, output_layers, colors, classes, image_map, print=True)
 
     ## Visualise predictions for image
-    # yolov3, anchors, classes, image_map = prepare_data_for_handmade()
-    # yolo_visualize(yolov3, anchors, classes, photo_filename="./images/5.png")
+    yolov3, anchors, classes, image_map = prepare_data_for_handmade()
+    yolo_visualize(yolov3, anchors, classes, photo_filename="./images/5.png")
