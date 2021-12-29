@@ -4,8 +4,6 @@ from yolo import YoloModel
 from pretrained_yolo_image import yolo_visualize
 import argparse
 
-from evaluation import calculate_average_precision
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     group = parser.add_mutually_exclusive_group()
