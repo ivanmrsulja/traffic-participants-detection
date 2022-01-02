@@ -49,4 +49,4 @@ def run_on_real_time_video(net, output_layers, colors, classes, video_path, min_
 
 if __name__ == "__main__":
     net, output_layers, colors, classes = load_configured_yolo_model(YoloModel.V4_TINY)
-    run_on_real_time_video(net, output_layers, colors, classes,"demo_videos/usa-street.mp4")
+    run_on_real_time_video(net, output_layers, colors, classes,"demo_videos/test.mp4")

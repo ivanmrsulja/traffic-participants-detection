@@ -9,6 +9,7 @@ class YoloModel(Enum):
 	V4_TINY = "yolov4-tiny"
 	V3_TINY = "yolov3-tiny"
 	V3 = "yolov3"
+	V3_HANDMADE = "no-value"
 
 
 def conv_block(inp, convs, skip=True):
