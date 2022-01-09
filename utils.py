@@ -58,6 +58,7 @@ def decode_netout(netout, anchors, obj_thresh, net_h, net_w, image_h, image_w):
 
 # load and prepare an image
 def process_image(filename, shape):
+    print(filename)
     image = cv2.cvtColor(cv2.imread(filename), cv2.COLOR_BGR2RGB)
     width, height = image.shape[1], image.shape[0]
     image = cv2.resize(image, shape, interpolation=cv2.INTER_AREA)
@@ -81,7 +82,7 @@ def visualize_boxes(filename, boxes, box_ids, label_indexes, scores, label_names
 
 def load_annotated_data():
     image_map = {}
-    with open('./images-annotation-data/labels_soft.csv', 'r') as file:
+    with open('./images-annotation-data/labels_test.csv', 'r') as file:
         lines = file.readlines()
         for line in lines:
             tokens = line.split(',')
