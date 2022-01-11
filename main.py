@@ -1,5 +1,6 @@
 from numpy.lib.type_check import imag
 from evaluation import evaluate_handmade_yolov3, evaluate_preconfigured_yolo, calculate_average_precision, prepare_data_for_handmade, prepare_data_for_pretrained
+from pretrained_yolo_real_time import run_on_real_time_video, load_configured_yolo_model
 from yolo import YoloModel
 from pretrained_yolo_image import yolo_visualize
 import argparse
@@ -13,14 +14,20 @@ if __name__ == '__main__':
     group.add_argument("-smp", "--simpleMetricsPreconfigured", help="Calculate simple metrics for preconfigured model (accuracy, precision, recall and f-value)\nDefaults to 'yolov4-tiny.'", const="yolov4-tiny", nargs="?", type=YoloModel)
     group.add_argument("-vpi", "--visualizePredictionsImage", help="Visualise predictions for image.\nDefaults to 1.png in images folder.", const="./images/1.png", nargs="?")
     
+    videoGroup = group.add_argument_group()
+    videoGroup.add_argument("-rrtv", "--runRealTimeVideo",help="Run on video", const="test.mp4", nargs="?")
+    videoGroup.add_argument("-a", "--algorithm",help="Choose algorithm to run on video", const="yolov4-tiny", nargs="?", type=YoloModel)
+
     args = parser.parse_args()
 
     meanAP = args.meanAveragePrecision
     smh = args.simpleMetricsHandmade
     smp = args.simpleMetricsPreconfigured
     vpi = args.visualizePredictionsImage
+    rrtv = args.runRealTimeVideo
+    alg = args.algorithm
 
-    if (not meanAP) and (not smh) and (not smp) and (not vpi):
+    if (not meanAP) and (not smh) and (not smp) and (not vpi) and (not rrtv):
         print("Run this script with -h or --help flag to see the available options.")
     else: 
         if meanAP:
@@ -40,6 +47,16 @@ if __name__ == '__main__':
         if vpi:
             yolov3, anchors, classes, image_map = prepare_data_for_handmade()
             yolo_visualize(yolov3, anchors, classes, photo_filename=f"./images/{vpi}")
+        
+        if rrtv:
+            model = None
+            if not alg:
+                model = YoloModel.V4_TINY
+            else:
+                model = alg
+            print(f"Using model {model} on video demo_videos/{rrtv}")
+            net, output_layers, colors, classes = load_configured_yolo_model(model)
+            run_on_real_time_video(net, output_layers, colors, classes,f"demo_videos/{rrtv}")
     
     ## Calculate mAP
     # calculate_average_precision(0.2, 0.7)
@@ -56,3 +73,6 @@ if __name__ == '__main__':
     ## Visualise predictions for image
     # yolov3, anchors, classes, image_map = prepare_data_for_handmade()
     # yolo_visualize(yolov3, anchors, classes, photo_filename="./images/5.png")
+
+    # net, output_layers, colors, classes = load_configured_yolo_model(YoloModel.V4_TINY)
+    # run_on_real_time_video(net, output_layers, colors, classes,"demo_videos/test.mp4")
