@@ -8,6 +8,10 @@ def sigmoid(x):
     return 1. / (1. + np.exp(-x))
 
 
+def get_random_colors_for_classes(num_classes):
+    return np.random.uniform(0, 255, size=(num_classes, 3))
+
+
 def decode_netout(netout, anchors, obj_thresh, net_h, net_w, image_h, image_w):
     grid_h, grid_w = netout.shape[:2]
     nb_box = 3
