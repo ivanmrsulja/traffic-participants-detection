@@ -202,4 +202,3 @@ def calculate_metrics(detection_success, detection_total,
 
     return result_map
     
-

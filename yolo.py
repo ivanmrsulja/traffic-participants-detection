@@ -155,3 +155,4 @@ def decode_net_output(outs, min_confidence, max_iou_for_suppression, width, heig
 
     box_indexes = cv2.dnn.NMSBoxes(boxes, confidences, min_confidence, max_iou_for_suppression)
     return boxes, box_indexes, class_ids, confidences
+	

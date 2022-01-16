@@ -86,3 +86,4 @@ if __name__ == "__main__":
     # yolov3, anchors, classes, image_map = prepare_data_for_handmade()
     # colors = np.random.uniform(0, 255, size=(len(classes), 3))
     # run_on_real_time_video(yolov3, colors, classes, "demo_videos/test.mp4", process_frame_handmade, anchors=anchors)
+    
