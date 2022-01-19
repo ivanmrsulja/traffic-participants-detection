@@ -44,7 +44,7 @@ These options can also be viewed by running the `main.py` file with `-h` flag en
 
 | Short option | Long option                  | Description                                                                                                             |
 | ------------ | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| -map         | --meanAveragePrecision       | Calculates mean average precision.Defaults to analyzing handmade model.                                                 |
+| -map         | --meanAveragePrecision       | Calculates mean average precision. Defaults to analyzing handmade model.                                                 |
 | -smh         | --simpleMetricsHandmade      | Calculates simple metrics for handmade model (accuracy, precision, recall and f-value).                                 |
 | -smp         | --simpleMetricsPreconfigured | Calculates simple metrics for preconfigured model (accuracy, precision, recall and f-value). Defaults to 'yolov4-tiny.' |
 | -vpi         | --visualizePredictionsImage  | Visualize predictions for image. Defaults to '1.png' in images folder.                                                  |
