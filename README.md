@@ -1,6 +1,6 @@
 # traffic-participants-detection
 
-Traffic participants detection, localization and classification on real time video.
+Traffic participants (pedestrians, busses, cars and trucks) recognition, localization and classification on real time video made using various ML models from YOLO family, specifically: YOLOv3, YOLOv3-tiny, YOLOv4-tiny. Above all, we also hand-made one YOLOv3 implementation to compare with these pre-configured models. Handmade model is heavily inspired by [pjreddie](https://github.com/pjreddie/darknet)'s and [experiencor](https://github.com/experiencor/keras-yolo3)'s implementations.
 
 ## Installation
 
@@ -47,15 +47,21 @@ These options can also be viewed by running the `main.py` file with `-h` flag en
 
 ## Demos
 
-TODO: add demos
+### YOLOv3 (handmade)
+![Handmade](./demos/handmade.gif)
+
+### YOLOv3
+![YOLOv3](./demos/v3.gif)
+
+### YOLOv3-tiny
+![YOLOv3-tiny](./demos/v3-tiny.gif)
+
+### YOLOv4-tiny
+![YOLOv4-tiny](./demos/v4-tiny.gif)
 
 ## Sources
 
 - https://jonathan-hui.medium.com/map-mean-average-precision-for-object-detection-45c121a31173
-
-- https://github.com/muhammadshiraz/YOLO-Real-Time-Object-Detection
-
-- https://github.com/experiencor/keras-yolo3
 
 - https://blog.roboflow.com/a-thorough-breakdown-of-yolov4/
 
@@ -66,6 +72,12 @@ TODO: add demos
 - https://www.pyimagesearch.com/2018/11/12/yolo-object-detection-with-opencv/
 
 - https://towardsdatascience.com/object-detection-using-yolov3-and-opencv-19ee0792a420
+
+- https://github.com/pjreddie/darknet
+
+- https://github.com/muhammadshiraz/YOLO-Real-Time-Object-Detection
+
+- https://github.com/experiencor/keras-yolo3
 
 - https://www.youtube.com/watch?v=9s_FpMpdYW8
 
