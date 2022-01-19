@@ -10,10 +10,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     group = parser.add_mutually_exclusive_group()
     
-    group.add_argument("-map", "--meanAveragePrecision", help="Calculate mean average precision.\nDefaults to analyzing handmade model.", const="no-value", nargs="?", type=YoloModel)
-    group.add_argument("-smh", "--simpleMetricsHandmade", help="Calculate simple metrics for handmade model (accuracy, precision, recall and f-value)", const="handmade", nargs="?")
-    group.add_argument("-smp", "--simpleMetricsPreconfigured", help="Calculate simple metrics for preconfigured model (accuracy, precision, recall and f-value)\nDefaults to 'yolov4-tiny.'", const="yolov4-tiny", nargs="?", type=YoloModel)
-    group.add_argument("-vpi", "--visualizePredictionsImage", help="Visualise predictions for image.\nDefaults to 1.png in images folder.", const="1.png", nargs="?")
+    group.add_argument("-map", "--meanAveragePrecision", help="Calculates mean average precision.\nDefaults to analyzing handmade model.", const="no-value", nargs="?", type=YoloModel)
+    group.add_argument("-smh", "--simpleMetricsHandmade", help="Calculates simple metrics for handmade model (accuracy, precision, recall and f-value)", const="handmade", nargs="?")
+    group.add_argument("-smp", "--simpleMetricsPreconfigured", help="Calculates simple metrics for preconfigured model (accuracy, precision, recall and f-value)\nDefaults to 'yolov4-tiny.'", const="yolov4-tiny", nargs="?", type=YoloModel)
+    group.add_argument("-vpi", "--visualizePredictionsImage", help="Visualize predictions for image.\nDefaults to 1.png in images folder.", const="1.png", nargs="?")
     
     videoGroup = group.add_argument_group()
     videoGroup.add_argument("-rrtv", "--runRealTimeVideo",help="Run on video", const="test.mp4", nargs="?")
