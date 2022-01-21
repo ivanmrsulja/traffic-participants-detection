@@ -1,6 +1,6 @@
 # traffic-participants-detection
 
-Traffic participants (pedestrians, busses, cars and trucks) recognition, localization and classification on real time video made using various ML models from YOLO family, specifically: YOLOv3, YOLOv3-tiny, YOLOv4-tiny. Above all, we also hand-made one YOLOv3 implementation to compare with these pre-configured models. Handmade model is heavily inspired by [pjreddie](https://github.com/pjreddie/darknet)'s and [experiencor](https://github.com/experiencor/keras-yolo3)'s implementations.
+Traffic participants (pedestrians, busses, cars and trucks) recognition, localization and classification on real time video made using various ML models from YOLO family, specifically: YOLOv3, YOLOv3-tiny, YOLOv4-tiny. Above all, we also hand-made one YOLOv3 implementation to compare with these pre-configured models. Handmade model is heavily inspired by [pjreddie](https://github.com/pjreddie/darknet)'s and [experiencor](https://github.com/experiencor/keras-yolo3)'s implementations. All models have been configured to run using CPU only.
 
 <div align="center"> 
 
@@ -44,7 +44,7 @@ These options can also be viewed by running the `main.py` file with `-h` flag en
 
 | Short option | Long option                  | Description                                                                                                             |
 | ------------ | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| -map         | --meanAveragePrecision       | Calculates mean average precision.Defaults to analyzing handmade model.                                                 |
+| -map         | --meanAveragePrecision       | Calculates mean average precision. Defaults to analyzing handmade model.                                                 |
 | -smh         | --simpleMetricsHandmade      | Calculates simple metrics for handmade model (accuracy, precision, recall and f-value).                                 |
 | -smp         | --simpleMetricsPreconfigured | Calculates simple metrics for preconfigured model (accuracy, precision, recall and f-value). Defaults to 'yolov4-tiny.' |
 | -vpi         | --visualizePredictionsImage  | Visualize predictions for image. Defaults to '1.png' in images folder.                                                  |
