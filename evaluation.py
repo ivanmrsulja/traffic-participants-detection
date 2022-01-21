@@ -1,7 +1,7 @@
 from matplotlib.pyplot import cla
 from pretrained_yolo_image import prepare_yolo, yolo_predict, yolo_visualize
 from utils import bb_intersection_over_union, load_annotated_data, initalize_metrics, calculate_metrics, print_metrics
-from yolo import load_configured_yolo_model, decode_net_output, load_coco_classes
+from yolo import YoloModel, load_configured_yolo_model, decode_net_output, load_coco_classes
 import cv2
 import numpy as np
 
@@ -67,7 +67,7 @@ def evaluate_handmade_yolov3(yolov3, anchors, classes, image_map, iou_threshold=
     return result_map
 
 
-def evaluate_preconfigured_yolo(net, output_layers, _, classes, image_map, iou_threshold=0.3, min_confidence=0.2, max_iou_for_suppression=0.3, print=False):
+def evaluate_preconfigured_yolo(net, output_layers, _, classes, image_map, iou_threshold=0.3, min_confidence=0.5, max_iou_for_suppression=0.3, print=False):
     detection_success, detection_total, true_detection_positives, false_detection_positives, false_detection_negatives, true_classification_positives, false_classification_positives, false_classification_negatives = initalize_metrics()
 
     for key in image_map.keys():
@@ -150,7 +150,11 @@ def calculate_average_precision(start, finish, model=None):
         if model is None:
             result_map = evaluate_handmade_yolov3(yolov3, anchors, classes, image_map, thresh)
         else:
-            result_map = evaluate_preconfigured_yolo(net, output_layers, colors, classes, image_map, thresh)
+            if model == YoloModel.V3:
+                min_confidence = 0.5
+            else:
+                min_confidence = 0.2
+            result_map = evaluate_preconfigured_yolo(net, output_layers, colors, classes, image_map, thresh, min_confidence)
         for key in result_map["classification"].keys():
             item = result_map["classification"][key]
             evaluation_map[key]["precision"].append(item[0])

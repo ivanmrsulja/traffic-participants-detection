@@ -21,29 +21,32 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    meanAP = args.meanAveragePrecision
+    meanAP_model = args.meanAveragePrecision
     smh = args.simpleMetricsHandmade
-    smp = args.simpleMetricsPreconfigured
+    smp_model = args.simpleMetricsPreconfigured
     vpi = args.visualizePredictionsImage
     rrtv = args.runRealTimeVideo
     alg = args.algorithm
 
-    if (not meanAP) and (not smh) and (not smp) and (not vpi) and (not rrtv):
+    if (not meanAP_model) and (not smh) and (not smp) and (not vpi) and (not rrtv):
         print("Run this script with -h or --help flag to see the available options.")
     else: 
-        if meanAP:
-            if meanAP == YoloModel.V3_HANDMADE:
+        if meanAP_model:
+            if meanAP_model == YoloModel.V3_HANDMADE:
                 calculate_average_precision(0.2, 0.7)
             else:
-                calculate_average_precision(0.2, 0.7, meanAP)
+                calculate_average_precision(0.2, 0.7, meanAP_model)
 
         if smh:
             yolov3, anchors, classes, image_map = prepare_data_for_handmade()
             evaluate_handmade_yolov3(yolov3, anchors, classes, image_map, print=True)
         
-        if smp:
-            net, output_layers, colors, classes, image_map = prepare_data_for_pretrained(smp)
-            evaluate_preconfigured_yolo(net, output_layers, colors, classes, image_map, print=True)
+        if smp_model:
+            net, output_layers, colors, classes, image_map = prepare_data_for_pretrained(smp_model)
+            if smp_model == YoloModel.V3:
+                evaluate_preconfigured_yolo(net, output_layers, colors, classes, image_map, print=True)
+            else:
+                evaluate_preconfigured_yolo(net, output_layers, colors, classes, image_map, print=True, min_confidence=0.2)
 
         if vpi:
             yolov3, anchors, classes, image_map = prepare_data_for_handmade()
