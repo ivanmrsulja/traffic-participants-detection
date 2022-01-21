@@ -28,7 +28,7 @@ if __name__ == '__main__':
     rrtv = args.runRealTimeVideo
     alg = args.algorithm
 
-    if (not meanAP_model) and (not smh) and (not smp) and (not vpi) and (not rrtv):
+    if (not meanAP_model) and (not smh) and (not smp_model) and (not vpi) and (not rrtv):
         print("Run this script with -h or --help flag to see the available options.")
     else: 
         if meanAP_model:
