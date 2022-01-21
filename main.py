@@ -46,7 +46,7 @@ if __name__ == '__main__':
             if smp_model == YoloModel.V3:
                 evaluate_preconfigured_yolo(net, output_layers, colors, classes, image_map, print=True)
             else:
-                evaluate_preconfigured_yolo(net, output_layers, colors, classes, image_map, print=True, min_confidence=0.2)
+                evaluate_preconfigured_yolo(net, output_layers, colors, classes, image_map, print=True, min_confidence=0.2, iou_threshold=0.3)
 
         if vpi:
             yolov3, anchors, classes, image_map = prepare_data_for_handmade()

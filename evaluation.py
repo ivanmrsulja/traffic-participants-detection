@@ -67,7 +67,7 @@ def evaluate_handmade_yolov3(yolov3, anchors, classes, image_map, iou_threshold=
     return result_map
 
 
-def evaluate_preconfigured_yolo(net, output_layers, _, classes, image_map, iou_threshold=0.3, min_confidence=0.5, max_iou_for_suppression=0.3, print=False):
+def evaluate_preconfigured_yolo(net, output_layers, _, classes, image_map, iou_threshold=0.5, min_confidence=0.5, max_iou_for_suppression=0.3, print=False):
     detection_success, detection_total, true_detection_positives, false_detection_positives, false_detection_negatives, true_classification_positives, false_classification_positives, false_classification_negatives = initalize_metrics()
 
     for key in image_map.keys():
