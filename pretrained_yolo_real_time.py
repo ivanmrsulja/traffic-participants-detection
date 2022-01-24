@@ -36,12 +36,14 @@ def run_on_real_time_video(model, colors, classes, video_path, process_function,
 
         elapsed_time = time.time() - starting_time
         fps = frame_count / elapsed_time
+        if elapsed_time >= 1:
+            starting_time = time.time()
+            frame_count = 0
         cv2.putText(frame, "FPS: " + str(round(fps, 2)), (10, 50), font, 2, (0, 0, 0), 3)
         cv2.imshow("Demo: {}".format(video_path), frame)
         key = cv2.waitKey(1)
         if key == 27: # ESCAPE
             break
-
     cap.release()
     cv2.destroyAllWindows()
 
